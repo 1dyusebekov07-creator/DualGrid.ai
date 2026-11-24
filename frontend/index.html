@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DualGrid Tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" class="logo" aria-hidden="true"><path d="M18 2 6 18h8l-2 12 12-16h-8z"/></svg>
+    <div>
+      <div class="brand-name">DualGrid Tutor</div>
+      <div class="brand-sub">Противоаварийный тренажёр ОДС · 110/10 кВ · ПТЭ/ПУЭ РК</div>
+    </div>
+  </div>
+  <div class="controls">
+    <label>Город и сезон
+      <select id="city"></select>
+    </label>
+    <label>Сложность
+      <select id="difficulty">
+        <option value="medium">Средний</option>
+        <option value="high">Высокий — каскадный отказ</option>
+      </select>
+    </label>
+    <button id="btn-new" class="btn primary">Экзаменатор: новая задача</button>
+    <span id="ai-pill" class="pill">…</span>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="scheme-panel">
+    <div class="scheme-toolbar">
+      <div class="seg" role="radiogroup" aria-label="Режим">
+        <button class="seg-btn active" data-mode="switch">Переключение аппаратов</button>
+        <button class="seg-btn" data-mode="check">УВН: проверка напряжения на КЛ</button>
+      </div>
+      <button id="btn-reset" class="btn ghost">Сбросить к вводной</button>
+    </div>
+    <div class="scheme-wrap">
+      <svg id="scheme" viewBox="0 0 1000 740" preserveAspectRatio="xMidYMid meet"></svg>
+      <div id="tooltip" class="tooltip" hidden></div>
+    </div>
+    <div class="status-strip">
+      <div class="meter" id="m-T1"></div>
+      <div class="meter" id="m-T2"></div>
+      <div class="meter" id="m-DGU"></div>
+      <div class="unserved" id="unserved"></div>
+    </div>
+    <ul id="warnings" class="warnings"></ul>
+    <div class="legend">
+      <span><i class="lg brk on"></i>Выключатель включён</span>
+      <span><i class="lg brk"></i>отключён</span>
+      <span><i class="lg line live"></i>Под напряжением 10 кВ</span>
+      <span><i class="lg line dead"></i>Обесточено</span>
+      <span><i class="lg line warn"></i>80–100% I_доп</span>
+      <span><i class="lg line over"></i>Перегруз &gt;100%</span>
+      <span><i class="lg line fault"></i>Повреждение</span>
+    </div>
+  </section>
+
+  <aside class="side">
+    <nav class="tabs">
+      <button class="tab active" data-tab="brief">Вводная</button>
+      <button class="tab" data-tab="log">Журнал <span id="log-count" class="badge">0</span></button>
+      <button class="tab" data-tab="answer">Ответ</button>
+      <button class="tab" data-tab="review">Разбор</button>
+    </nav>
+
+    <div class="tab-body" id="tab-brief">
+      <div id="brief-empty" class="empty">
+        <h2>Начните тренировку</h2>
+        <p>Выберите город, сезон и сложность, затем нажмите <b>«Экзаменатор: новая задача»</b>. Агент-Экзаменатор сформирует аварийную вводную и настроит схему.</p>
+        <p>Кликайте по выключателям (квадраты), разъединителям (ножи) и заземляющим ножам — токи пересчитываются узловым солвером после каждой операции.</p>
+      </div>
+      <article id="brief" hidden></article>
+    </div>
+
+    <div class="tab-body" id="tab-log" hidden>
+      <ol id="oplog" class="oplog"></ol>
+      <p class="empty small" id="log-empty">Операций пока нет.</p>
+    </div>
+
+    <div class="tab-body" id="tab-answer" hidden>
+      <form id="answer-form"></form>
+      <button id="btn-submit" class="btn primary wide" disabled>Сдать решение Наставнику</button>
+      <p class="hint">Наставник получит журнал ваших операций с рассчитанными токами, итоговый режим и ваши ответы.</p>
+    </div>
+
+    <div class="tab-body" id="tab-review" hidden>
+      <p class="empty small" id="review-empty">Разбор появится после сдачи решения.</p>
+      <article id="review" hidden></article>
+    </div>
+  </aside>
+</main>
+<div id="busy" class="busy" hidden><div class="spinner"></div><span id="busy-text">Работаю…</span></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
